@@ -1,4 +1,14 @@
-var builder = WebApplication.CreateBuilder(args);
+using Microsoft.Extensions.Hosting.WindowsServices;
+
+var webApOpts = new WebApplicationOptions {
+    ContentRootPath = WindowsServiceHelpers.IsWindowsService() ?
+        AppContext.BaseDirectory : default,
+    Args = args
+};
+var builder = WebApplication.CreateBuilder(webApOpts);
+
+builder.Host.UseWindowsService();
+
 var config = builder.Configuration; // 取得 IConfiguration
 // 取得檔案儲存位置
 var fileStorePath = config.GetValue<string>("FileStorePath");
